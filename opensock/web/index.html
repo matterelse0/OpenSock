@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101714">
+  <title>OpenSock — управление системой</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="OpenSock, главная">
+        <span class="brand-mark">O<span>S</span></span>
+        <span class="brand-name">opensock<small>SYSTEM CONTROL</small></span>
+      </a>
+      <div class="side-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
+      <button class="nav-item" type="button" data-view="info"><span class="nav-icon">◈</span> Информация</button>
+      <button class="nav-item" type="button" data-view="kernel"><span class="nav-icon">⌘</span> Ядро</button>
+      <button class="nav-item" type="button" data-view="grub"><span class="nav-icon">▤</span> Загрузчик GRUB</button>
+      <button class="nav-item" type="button" data-view="network"><span class="nav-icon">⌁</span> Сеть и Wi-Fi</button>
+      <button class="nav-item active" type="button" data-view="menu"><span class="nav-icon">☷</span> Меню</button>
+      <div class="sidebar-bottom">
+        <div class="secure-mark"><span class="secure-dot"></span><span>Локальная сессия<small>Данные не покидают устройство</small></span></div>
+        <div class="version">OPENSOCK <span>v0.1.0</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb">OpenSock <span>/</span> <b id="breadcrumb-current">Меню</b></div>
+        <div class="local-pill"><span></span> LOCALHOST</div>
+      </header>
+
+      <div id="app-error" class="notice notice-error hidden"></div>
+
+      <section id="menu-view" class="page-view">
+        <section class="intro">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> OPEN SOCK · УПРАВЛЕНИЕ СИСТЕМОЙ</div>
+            <h1>Что будем <em>делать?</em></h1>
+            <p>Выберите раздел для просмотра системы, ядра, загрузчика или сетевых подключений.</p>
+          </div>
+          <div class="intro-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="core-symbol">OS</div><div class="orbit-dot"></div>
+          </div>
+        </section>
+        <section class="menu-grid" aria-label="Разделы OpenSock">
+          <button class="menu-card" type="button" data-open-view="info">
+            <span class="menu-card-top"><span class="menu-card-icon info-menu-icon">◈</span><span class="menu-card-order">01 / SYSTEM INFO</span></span>
+            <span class="menu-card-title">Информация</span>
+            <span class="menu-card-description">Сведения об операционной системе, процессоре, памяти, диске и загрузчике.</span>
+            <span class="menu-card-link">Открыть информацию <span>↗</span></span>
+          </button>
+          <button class="menu-card" type="button" data-open-view="kernel">
+            <span class="menu-card-top"><span class="menu-card-icon kernel-menu-icon">⌘</span><span class="menu-card-order">02 / KERNEL</span></span>
+              <span class="menu-card-title">Ядро</span>
+              <span class="menu-card-description">Выбрать версию, применить патч, пересобрать пакеты и отдельно установить ядро.</span>
+              <span class="menu-card-link">Открыть управление ядром <span>↗</span></span>
+          </button>
+            <button class="menu-card" type="button" data-open-view="grub">
+              <span class="menu-card-top"><span class="menu-card-icon grub-menu-icon">▤</span><span class="menu-card-order">03 / GRUB</span></span>
+              <span class="menu-card-title">Загрузчик GRUB</span>
+              <span class="menu-card-description">Настроить меню, время ожидания, параметры ядра, цвета и фоновое изображение.</span>
+              <span class="menu-card-link">Открыть настройки GRUB <span>↗</span></span>
+            </button>
+            <button class="menu-card" type="button" data-open-view="network">
+              <span class="menu-card-top"><span class="menu-card-icon info-menu-icon">⌁</span><span class="menu-card-order">04 / NETWORK</span></span>
+              <span class="menu-card-title">Сеть и Wi-Fi</span>
+              <span class="menu-card-description">Просмотр подключений, Wi-Fi, DNS, IPv4 и MAC-адреса сетевых интерфейсов.</span>
+              <span class="menu-card-link">Открыть управление сетью <span>↗</span></span>
+            </button>
+        </section>
+      </section>
+
+      <section id="info-view" class="page-view hidden">
+      <section class="intro">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> СОСТОЯНИЕ УСТРОЙСТВА</div>
+          <h1>Всё о вашей <em>системе.</em></h1>
+          <p>Сводка оборудования, операционной системы и параметров загрузки.</p>
+        </div>
+        <div class="intro-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="core-symbol">⌘</div><div class="orbit-dot"></div>
+        </div>
+      </section>
+
+      <section class="system-grid" aria-label="Сведения о системе">
+        <article class="system-card">
+          <div class="card-icon kernel-icon">⌘</div>
+          <div><div class="card-label">ТЕКУЩЕЕ ЯДРО</div><div id="kernel" class="card-value">Определение…</div><div class="card-sub">Активная версия</div></div>
+          <span class="status-live"><i></i> ЗАПУЩЕНО</span>
+        </article>
+        <article class="system-card">
+          <div class="card-icon distro-icon">◉</div>
+          <div><div class="card-label">ДИСТРИБУТИВ</div><div id="distribution" class="card-value">Определение…</div><div id="architecture" class="card-sub">Архитектура…</div></div>
+        </article>
+        <article class="system-card">
+          <div class="card-icon grub-icon">▤</div>
+          <div><div class="card-label">ЗАГРУЗЧИК</div><div id="bootloader" class="card-value">Определение…</div><div id="bootloader-state" class="card-sub">Проверка конфигурации</div></div>
+          <span id="bootloader-badge" class="grub-ready">● ПРОВЕРКА</span>
+        </article>
+      </section>
+      <div class="overview-actions"><button id="refresh-status" class="refresh-button" type="button">↻ <span>Обновить сведения</span></button><span>Информация считывается с этого устройства</span></div>
+
+      <section class="details-grid" aria-label="Подробная информация о системе">
+        <article class="panel detail-panel">
+          <div class="detail-heading"><span class="detail-icon">▧</span><div><h2>Операционная система</h2><p>Платформа и среда загрузки</p></div></div>
+          <div class="detail-row"><span>Имя устройства</span><b id="hostname">—</b></div>
+          <div class="detail-row"><span>Архитектура</span><b id="architecture-detail">—</b></div>
+          <div class="detail-row"><span>Secure Boot</span><b id="secure-boot">—</b></div>
+        </article>
+        <article class="panel detail-panel">
+          <div class="detail-heading"><span class="detail-icon cpu-detail-icon">⌘</span><div><h2>Процессор</h2><p>Обнаруженное оборудование</p></div></div>
+          <div class="detail-highlight" id="cpu-model">Загрузка данных…</div>
+          <div class="detail-row"><span>Логические потоки</span><b id="cpu-threads">—</b></div>
+          <div class="detail-row"><span>Время работы</span><b id="uptime">—</b></div>
+        </article>
+        <article class="panel detail-panel">
+          <div class="detail-heading"><span class="detail-icon memory-detail-icon">▥</span><div><h2>Память</h2><p>Использование оперативной памяти</p></div></div>
+          <div class="resource-values"><b id="memory-used">—</b><span>из <span id="memory-total">—</span></span></div>
+          <div class="resource-track"><div id="memory-bar"></div></div>
+          <div class="resource-foot"><span>Доступно</span><b id="memory-available">—</b></div>
+        </article>
+        <article class="panel detail-panel">
+          <div class="detail-heading"><span class="detail-icon disk-detail-icon">▤</span><div><h2>Системный диск</h2><p>Корневой раздел /</p></div></div>
+          <div class="resource-values"><b id="disk-used">—</b><span>из <span id="disk-total">—</span></span></div>
+          <div class="resource-track"><div id="disk-bar"></div></div>
+          <div class="resource-foot"><span>Свободно</span><b id="disk-free">—</b></div>
+        </article>
+      </section>
+      </section>
+
+      <section id="kernel-view" class="page-view hidden">
+      <section class="intro changes-intro">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> ОБСЛУЖИВАНИЕ СИСТЕМЫ</div>
+          <h1>Сборка <em>ядра.</em></h1>
+          <p>Собирайте официальные исходники и устанавливайте пакеты ядра отдельно от настроек GRUB.</p>
+        </div>
+        <div class="intro-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="core-symbol">⌘</div><div class="orbit-dot"></div>
+        </div>
+      </section>
+      <div id="kernel-notice" class="notice notice-error hidden"></div>
+      <section class="workspace-grid">
+        <article class="panel build-panel">
+          <div class="panel-heading">
+            <div class="heading-icon">⌘</div>
+            <div><h2>Сборка ядра</h2><p>Официальные исходники kernel.org</p></div>
+            <span class="step-badge">01 / BUILD</span>
+          </div>
+          <div class="divider"></div>
+          <form id="build-form">
+            <label for="version">Версия ядра Linux</label>
+            <div class="input-wrap"><span class="input-prefix">linux</span><input id="version" name="version" required maxlength="80" placeholder="например 6.12.56 или 6.13-rc1" autocomplete="off"></div>
+            <div class="field-help">Исходный архив будет загружен по HTTPS с официального kernel.org. Требуется достаточно свободного места для исходников и сборки.</div>
+            <div class="label-row"><label for="patch">Патч <span class="optional">НЕОБЯЗАТЕЛЬНО</span></label><span class="patch-format">UNIFIED DIFF · ДО 1 МИБ</span></div>
+            <textarea id="patch" name="patch" spellcheck="false" placeholder="Вставьте diff-патч. Он будет проверен перед применением…"></textarea>
+            <div class="warning"><span>!</span><p>Если инструментов сборки не хватает, OpenSock предложит установить нужные пакеты через APT. Для установки понадобится системное подтверждение. Собирайте только доверенные патчи.</p></div>
+            <button id="build-button" class="button button-primary" type="submit"><span>Собрать из kernel.org</span><span class="button-arrow">↗</span></button>
+          </form>
+        </article>
+
+        <article class="panel install-panel">
+          <div class="panel-heading">
+            <div class="heading-icon">↓</div>
+            <div><h2>Установка ядра</h2><p>Установить пакеты из завершённой сборки</p></div>
+          </div>
+          <div class="divider"></div>
+          <div class="warning"><span>!</span><p>Установка пакетов ядра — системное действие. OpenSock не меняет настройки /etc/default/grub; пакет ядра может обновить список доступных записей загрузки.</p></div>
+          <div class="secure-note"><span class="shield">◇</span><div><b>Нужно системное подтверждение</b><small>Проверьте, что прежнее рабочее ядро останется доступно в меню загрузки.</small></div></div>
+          <button id="install-button" class="button button-secondary" type="button" disabled><span>Установить пакеты ядра</span><span class="button-arrow">↗</span></button>
+          <div id="install-hint" class="install-hint">Сначала соберите пакеты ядра.</div>
+        </article>
+      </section>
+
+      <section id="job-panel" class="panel job-panel hidden">
+        <div class="job-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> ПРОЦЕСС</div><h2 id="job-title">Сборка</h2></div><span id="job-status" class="job-status">В ОЧЕРЕДИ</span></div>
+        <div class="progress-track"><div id="progress-bar"></div></div>
+        <div id="package-list" class="package-list"></div>
+        <pre id="job-log" class="job-log"></pre>
+        <div id="install-result" class="install-result hidden"></div>
+      </section>
+      </section>
+
+      <section id="grub-view" class="page-view hidden">
+        <section class="intro">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> НАСТРОЙКА ЗАГРУЗЧИКА</div>
+            <h1>GRUB под <em>твоим контролем.</em></h1>
+            <p>Настрой меню загрузки, цвета и фон. Перед записью создаётся резервная копия.</p>
+          </div>
+          <div class="intro-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="core-symbol">▤</div><div class="orbit-dot"></div>
+          </div>
+        </section>
+        <div id="grub-notice" class="notice notice-error hidden"></div>
+        <section class="grub-workspace">
+          <article class="panel grub-settings-panel">
+            <div class="panel-heading">
+              <div class="heading-icon grub-heading-icon">▤</div>
+              <div><h2>Параметры меню</h2><p>Значения сохраняются в /etc/default/grub</p></div>
+            </div>
+            <div class="divider"></div>
+            <div class="grub-form-grid">
+              <div>
+                <label for="grub-timeout">Время ожидания, секунды</label>
+                <input id="grub-timeout" type="number" min="0" max="600" value="5">
+              </div>
+              <div>
+                <label for="grub-timeout-style">Показ меню</label>
+                <select id="grub-timeout-style">
+                  <option value="menu">Всегда показывать меню</option>
+                  <option value="hidden">Скрывать меню</option>
+                  <option value="countdown">Обратный отсчёт</option>
+                </select>
+              </div>
+              <div>
+                <label for="grub-default">Пункт загрузки по умолчанию</label>
+                <input id="grub-default" maxlength="120" value="0" placeholder="0 или saved">
+              </div>
+            </div>
+            <div class="field-help">Можно указать номер пункта (например 0) или saved. Не меняйте значение, если не уверены в структуре меню.</div>
+            <label for="grub-kernel-args">Параметры командной строки ядра</label>
+            <input id="grub-kernel-args" class="mono-input" maxlength="2048" placeholder="quiet splash">
+            <div class="field-help">Значение GRUB_CMDLINE_LINUX_DEFAULT.</div>
+            <div class="grub-form-grid">
+              <div>
+                <label for="grub-color-normal">Цвет обычного текста</label>
+                <select id="grub-color-normal">
+                  <option value="light-gray/black">Светло-серый на чёрном</option>
+                  <option value="white/blue">Белый на синем</option>
+                  <option value="light-green/black">Светло-зелёный на чёрном</option>
+                  <option value="yellow/black">Жёлтый на чёрном</option>
+                  <option value="white/dark-gray">Белый на тёмно-сером</option>
+                </select>
+              </div>
+              <div>
+                <label for="grub-color-highlight">Цвет выбранного пункта</label>
+                <select id="grub-color-highlight">
+                  <option value="black/light-gray">Чёрный на светло-сером</option>
+                  <option value="white/blue">Белый на синем</option>
+                  <option value="yellow/red">Жёлтый на красном</option>
+                  <option value="black/yellow">Чёрный на жёлтом</option>
+                  <option value="white/dark-gray">Белый на тёмно-сером</option>
+                </select>
+              </div>
+            </div>
+            <div class="grub-preview-screen" id="grub-preview-screen" aria-label="Предпросмотр цветов меню GRUB">
+              <span>Ubuntu</span><span class="grub-preview-selected">Дополнительные параметры</span><span>Проверка памяти</span>
+            </div>
+            <div class="grub-preview-command">GRUB_CMDLINE_LINUX_DEFAULT="<span id="grub-preview-args">quiet splash</span>"</div>
+          </article>
+          <article class="panel wallpaper-panel">
+            <div class="panel-heading">
+              <div class="heading-icon grub-heading-icon">▧</div>
+              <div><h2>Фон меню</h2><p>Добавить обои в меню загрузчика</p></div>
+            </div>
+            <div class="divider"></div>
+            <label class="upload-box" for="grub-wallpaper">
+              <span class="upload-icon">↑</span>
+              <span><b>Выбрать изображение</b><small>PNG или JPEG · максимум 8 МиБ</small></span>
+              <input id="grub-wallpaper" type="file" accept="image/png,image/jpeg">
+            </label>
+            <div id="wallpaper-name" class="wallpaper-name">Файл не выбран</div>
+            <img id="wallpaper-preview" class="wallpaper-preview hidden" alt="Предпросмотр фона GRUB">
+            <label class="checkbox-row"><input id="remove-wallpaper" type="checkbox"><span>Убрать текущие обои GRUB</span></label>
+            <div class="secure-note"><span class="shield">◇</span><div><b>Изменения применяются к загрузчику</b><small>OpenSock создаст резервную копию конфигурации, затем запустит update-grub с системным подтверждением.</small></div></div>
+            <button id="apply-grub-button" class="button button-primary" type="button"><span>Сохранить настройки GRUB</span><span class="button-arrow">↗</span></button>
+            <div id="grub-apply-hint" class="install-hint">Изменения не будут внесены без вашего подтверждения.</div>
+          </article>
+        </section>
+        <section id="grub-job-panel" class="panel job-panel hidden">
+          <div class="job-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> ПРИМЕНЕНИЕ НАСТРОЕК</div><h2>Обновление GRUB</h2></div><span id="grub-job-status" class="job-status">ВЫПОЛНЯЕТСЯ</span></div>
+          <pre id="grub-job-log" class="job-log"></pre>
+        </section>
+      </section>
+
+      <section id="network-view" class="page-view hidden">
+        <section class="intro">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> СЕТЬ И ПОДКЛЮЧЕНИЯ</div>
+            <h1>Всё под <em>соединением.</em></h1>
+            <p>Интерфейсы, Wi-Fi, адреса, DNS и MAC через NetworkManager.</p>
+          </div>
+          <div class="intro-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="core-symbol">⌁</div><div class="orbit-dot"></div>
+          </div>
+        </section>
+        <div id="network-notice" class="notice notice-error hidden"></div>
+        <section class="workspace-grid network-workspace">
+          <article class="panel">
+            <div class="panel-heading">
+              <div class="heading-icon">⌁</div>
+              <div><h2>Сетевой интерфейс</h2><p>Настройки активного профиля NetworkManager</p></div>
+              <button id="network-refresh" class="refresh-button" type="button" aria-label="Обновить состояние сети">↻</button>
+            </div>
+            <div class="divider"></div>
+            <label for="network-interface">Интерфейс Ethernet или Wi-Fi</label>
+            <select id="network-interface"></select>
+            <div id="network-interface-status" class="network-summary">Загрузка интерфейсов…</div>
+            <form id="network-settings-form">
+              <label for="network-ipv4-method">Настройка IPv4</label>
+              <select id="network-ipv4-method">
+                <option value="auto">Автоматически (DHCP)</option>
+                <option value="manual">Вручную (статический адрес)</option>
+              </select>
+              <div id="network-static-fields" class="network-static-fields hidden">
+                <label for="network-ipv4-address">IPv4-адрес с префиксом</label>
+                <input id="network-ipv4-address" placeholder="192.168.1.20/24" autocomplete="off">
+                <label for="network-ipv4-gateway">Шлюз (необязательно)</label>
+                <input id="network-ipv4-gateway" placeholder="192.168.1.1" autocomplete="off">
+              </div>
+              <label for="network-dns">DNS-серверы</label>
+              <input id="network-dns" placeholder="1.1.1.1, 2606:4700:4700::1111" autocomplete="off">
+              <div class="field-help">Оставьте пустым, чтобы использовать DNS, полученный автоматически.</div>
+              <label for="network-mac-mode">MAC-адрес профиля</label>
+              <select id="network-mac-mode">
+                <option value="permanent">Заводской адрес</option>
+                <option value="random">Случайный адрес</option>
+                <option value="custom">Задать вручную</option>
+              </select>
+              <input id="network-mac-address" class="network-mac-address hidden" placeholder="02:11:22:33:44:55" autocomplete="off" spellcheck="false">
+              <div class="secure-note network-warning"><span class="shield">!</span><div><b>Переподключение может прервать интернет</b><small>IP, DNS и MAC сохраняются в активном профиле. Операция потребует системного подтверждения.</small></div></div>
+              <button id="network-apply" class="button button-primary" type="submit"><span>Применить настройки интерфейса</span><span class="button-arrow">↗</span></button>
+            </form>
+            <button id="network-disconnect" class="button button-secondary network-disconnect" type="button"><span>Отключить интерфейс</span><span class="button-arrow">↗</span></button>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <div class="heading-icon">◉</div>
+              <div><h2>Беспроводные сети</h2><p>Сканирование и подключение через NetworkManager</p></div>
+            </div>
+            <div class="divider"></div>
+            <button id="wifi-scan" class="button button-secondary" type="button"><span>Найти сети Wi-Fi</span><span class="button-arrow">⌕</span></button>
+            <div id="wifi-network-list" class="wifi-network-list" aria-live="polite">Нажмите «Найти сети Wi-Fi» для сканирования.</div>
+            <form id="wifi-connect-form">
+              <label for="wifi-ssid">Выбранная сеть</label>
+              <input id="wifi-ssid" maxlength="32" required placeholder="Выберите сеть из списка" autocomplete="off">
+              <label for="wifi-password">Пароль Wi-Fi</label>
+              <input id="wifi-password" type="password" maxlength="64" required autocomplete="new-password" placeholder="Нужен для WPA/WPA2/WPA3-Personal">
+              <div class="field-help">Пароль передаётся только локальному помощнику и не записывается в журнал OpenSock. Сохранённый профиль защищает NetworkManager.</div>
+              <button id="wifi-connect" class="button button-primary" type="submit"><span>Подключиться к Wi-Fi</span><span class="button-arrow">↗</span></button>
+            </form>
+          </article>
+        </section>
+        <section id="network-job-panel" class="panel job-panel hidden">
+          <div class="job-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> СЕТЕВАЯ ОПЕРАЦИЯ</div><h2>Применение настроек</h2></div><span id="network-job-status" class="job-status">ВЫПОЛНЯЕТСЯ</span></div>
+          <pre id="network-job-log" class="job-log"></pre>
+        </section>
+      </section>
+
+      <footer><span>OpenSock <b>v0.1.0</b></span><span>Локальное управление системой · Изменения применяются после подтверждения</span></footer>
+    </main>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
